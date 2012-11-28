@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>LIJQ Testbed</title>
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+</head>
+<body>
+    <h1>LIJQ Testbed</h1>
+    <script type="text/javascript">
+
+
+        function parse(thing) {
+            for (var i in thing) {
+                var t = typeof thing[i];
+
+                switch (t) {
+                    case "function":
+                        describeFn(thing, i)
+                        break;
+                    case "object":
+                        console.debug((i + " ===> " + t));
+                        break;
+                }
+
+                if (t === "function") {
+
+                } else {
+
+                    // TODO - CAS - 26/11/2012 - Now build up data structures for each typeof, e.g.
+                    /*
+
+                     {
+                     numbers: ["a", "b"],
+                     objects: ["c", d"],
+                     functions: {
+                     ajax: [a,b,c],
+                     bjax: [d,e],
+                     cjax: []
+                     ]
+
+                     */
+                    console.debug((i + " ===> " + typeof thing[i]))
+                }
+            }
+        }
+        
+        function describeFn(parent, name) {
+            var signature = parent[name].toString().split("\n")[0];
+            var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "");
+            var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
+            console.log(name + " (" + argsLength + ") ===> " + args);
+        }
+
+        parse($)
+
+
+    </script>
+</body>
+</html>
+
