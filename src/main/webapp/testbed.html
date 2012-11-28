@@ -8,53 +8,83 @@
     <h1>LIJQ Testbed</h1>
     <script type="text/javascript">
 
+        // TODO - CAS - 26/11/2012 - Now build up data structures for each typeof, e.g.
+        /* {
+             numbers: ["a", "b"],
+             objects: ["c", d"],
+             functions: {
+                 ajax: [a,b,c],
+                 bjax: [d,e],
+                 cjax: []
+             }
+           }
+        */
+        var functions = new Object();
+        var builtIns = new Object();
 
         function parse(thing) {
-            for (var i in thing) {
-                var t = typeof thing[i];
-
+            for (var name in thing) {
+                var t = typeof thing[name];
                 switch (t) {
                     case "function":
-                        describeFn(thing, i)
+                        registerFn(thing, name);
                         break;
-                    case "object":
-                        console.debug((i + " ===> " + t));
+                    case "object": case "string": case "number": case "boolean":
+                        registerBuiltIn(thing, name);
                         break;
-                }
-
-                if (t === "function") {
-
-                } else {
-
-                    // TODO - CAS - 26/11/2012 - Now build up data structures for each typeof, e.g.
-                    /*
-
-                     {
-                     numbers: ["a", "b"],
-                     objects: ["c", d"],
-                     functions: {
-                     ajax: [a,b,c],
-                     bjax: [d,e],
-                     cjax: []
-                     ]
-
-                     */
-                    console.debug((i + " ===> " + typeof thing[i]))
+                    default:
+                        console.debug(("[[[[[" + t + "]]]]] ===> " + name));
+                        break;
                 }
             }
         }
         
-        function describeFn(parent, name) {
+        function registerFn(parent, name) {
             var signature = parent[name].toString().split("\n")[0];
-            var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "");
+            var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
+
             var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
-            console.log(name + " (" + argsLength + ") ===> " + args);
+
+            functions[name] = args;
+
+            // def addClass(className: String) = underlying ~> Run("addClass('" + className + "')")
+            // def $name($arg[0]: String, ... $arg[n]: String) = underlying ~> Run("$name('" + $arg[0] + ", " + $arg[1] + ", " + $arg[n]')")
+
+            var sig = "def " + name+ "(" + toScalaArgs(args) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(args) + ")\")";
+            console.log(sig);
         }
 
-        parse($)
+        function registerBuiltIn(parent, name) {
+            builtIns[name] = "";
+        }
 
+        function toScalaArgs(args) {
+            // TODO - CAS - 28/11/2012 - Write a foreach
+            var appender = "";
+            for (var i = 0; i < args.length; i++) {
+                var arg = args[i];
+                appender += arg + ": String";
+                if (i < args.length - 1) appender += ", "
+            }
+            return appender.replace(", $");
+        }
+
+        function toJsArgs(args)  {
+            var appender = "";
+            for (var i = 0; i < args.length; i++) {
+                appender += "'\" + " + args[i] + " + \"'";
+                if (i < args.length - 1) appender += ", "
+            }
+            return appender.replace(", $");
+        }
+
+        parse($);
+        console.log(builtIns);
 
     </script>
+
+<h2>Select a version of JQuery ...</h2>
+<h2>Generate ...</h2>
 </body>
 </html>
 
