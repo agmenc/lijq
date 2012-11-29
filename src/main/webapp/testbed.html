@@ -8,78 +8,66 @@
     <h1>LIJQ Testbed</h1>
     <script type="text/javascript">
 
-        // TODO - CAS - 26/11/2012 - Now build up data structures for each typeof, e.g.
-        /* {
-             numbers: ["a", "b"],
-             objects: ["c", d"],
-             functions: {
-                 ajax: [a,b,c],
-                 bjax: [d,e],
-                 cjax: []
-             }
-           }
-        */
-        var functions = new Object();
-        var builtIns = new Object();
+        var Parser = function(thing) {
+            var functions = "";
+            var builtIns = "";
 
-        function parse(thing) {
-            for (var name in thing) {
-                var t = typeof thing[name];
-                switch (t) {
-                    case "function":
-                        registerFn(thing, name);
-                        break;
-                    case "object": case "string": case "number": case "boolean":
+            this.parse = function() {
+                for (var name in thing) {
+                    var t = typeof thing[name];
+                    switch (t) {
+                        case "function":
+                            registerFn(thing, name);
+                            break;
+                        case "object": case "string": case "number": case "boolean":
                         registerBuiltIn(thing, name);
                         break;
-                    default:
-                        console.debug(("[[[[[" + t + "]]]]] ===> " + name));
-                        break;
+                        default:
+                            console.debug(("[[[[[" + t + "]]]]] ===> " + name));
+                            break;
+                    }
                 }
+
+                return builtIns + "\n" + functions;
+            };
+
+            function registerFn(parent, name) {
+                var signature = parent[name].toString().split("\n")[0];
+                var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
+
+                var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
+
+                var sig = "def " + name+ "(" + toScalaArgs(args) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(args) + ")\")";
+                functions += sig + "\n";
             }
-        }
-        
-        function registerFn(parent, name) {
-            var signature = parent[name].toString().split("\n")[0];
-            var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
 
-            var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
-
-            functions[name] = args;
-
-            // def addClass(className: String) = underlying ~> Run("addClass('" + className + "')")
-            // def $name($arg[0]: String, ... $arg[n]: String) = underlying ~> Run("$name('" + $arg[0] + ", " + $arg[1] + ", " + $arg[n]')")
-
-            var sig = "def " + name+ "(" + toScalaArgs(args) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(args) + ")\")";
-            console.log(sig);
-        }
-
-        function registerBuiltIn(parent, name) {
-            builtIns[name] = "";
-        }
-
-        function toScalaArgs(args) {
-            // TODO - CAS - 28/11/2012 - Write a foreach
-            var appender = "";
-            for (var i = 0; i < args.length; i++) {
-                var arg = args[i];
-                appender += arg + ": String";
-                if (i < args.length - 1) appender += ", "
+            function registerBuiltIn(parent, name) {
+                builtIns += "val " + name + "\n";
             }
-            return appender.replace(", $");
-        }
 
-        function toJsArgs(args)  {
-            var appender = "";
-            for (var i = 0; i < args.length; i++) {
-                appender += "'\" + " + args[i] + " + \"'";
-                if (i < args.length - 1) appender += ", "
+            function toScalaArgs(args) {
+                // TODO - CAS - 28/11/2012 - Write a foreach
+                var appender = "";
+                for (var i = 0; i < args.length; i++) {
+                    var arg = args[i];
+                    appender += arg + ": String";
+                    if (i < args.length - 1) appender += ", "
+                }
+                return appender.replace(", $");
             }
-            return appender.replace(", $");
-        }
 
-        parse($);
-        console.log(builtIns);
+            function toJsArgs(args)  {
+                var appender = "";
+                for (var i = 0; i < args.length; i++) {
+                    appender += "'\" + " + args[i] + " + \"'";
+                    if (i < args.length - 1) appender += ", "
+                }
+                return appender.replace(", $");
+            }
+        };
+
+        var result = new Parser($).parse();
+        console.log(result);
 
     </script>
 
