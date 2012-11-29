@@ -5,7 +5,12 @@
     <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
 </head>
 <body>
-    <h1>LIJQ Testbed</h1>
+    <h1>LIJQ</h1>
+    <h4>Select a version of JQuery ...</h4>
+    <h4>Generate ...</h4>
+    <h2>DollarLike</h2>
+    <textarea id="DollarLike" style="font-size: 6pt; width: 300px; height: 200px;"></textarea>
+
     <script type="text/javascript">
 
         var Parser = function(thing) {
@@ -31,48 +36,60 @@
                 return builtIns + "\n" + functions;
             };
 
+            function safe(name) {
+                console.log(name);
+                return name.replace("type", "typeX")
+            }
+
             function registerFn(parent, name) {
                 var signature = parent[name].toString().split("\n")[0];
-                var args = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
+                var argsList = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
 
                 var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
 
-                var sig = "def " + name+ "(" + toScalaArgs(args) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(args) + ")\")";
+                while (argsList.length > argsLength) argsList.shift();
+
+                var sig = (thing == $) ? dollarFnTemplate(name, argsList) : jqueryFnTemplate(name, argsList);
                 functions += sig + "\n";
             }
 
-            function registerBuiltIn(parent, name) {
-                builtIns += "val " + name + "\n";
+            function dollarFnTemplate(name, argsList) {
+                return "def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = Run(\"jQuery." + name + "(" + toJsArgs(argsList) + ")\")";
             }
 
-            function toScalaArgs(args) {
+            function jqueryFnTemplate(name, argsList) {
+                return "def " + same(name)+ "(" + toScalaArgs(argsList) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(argsList) + ")\")";
+            }
+
+            function registerBuiltIn(parent, name) {
+                builtIns += "val " + name + " = Run(\"jQuery." + name + "\")\n";
+            }
+
+            function toScalaArgs(argsList) {
                 // TODO - CAS - 28/11/2012 - Write a foreach
                 var appender = "";
-                for (var i = 0; i < args.length; i++) {
-                    var arg = args[i];
-                    appender += arg + ": String";
-                    if (i < args.length - 1) appender += ", "
+                for (var i = 0; i < argsList.length; i++) {
+                    var arg = argsList[i];
+                    appender += safe(arg) + ": String";
+                    if (i < argsList.length - 1) appender += ", "
                 }
                 return appender.replace(", $");
             }
 
-            function toJsArgs(args)  {
+            function toJsArgs(argsList)  {
                 var appender = "";
-                for (var i = 0; i < args.length; i++) {
-                    appender += "'\" + " + args[i] + " + \"'";
-                    if (i < args.length - 1) appender += ", "
+                for (var i = 0; i < argsList.length; i++) {
+                    appender += "'\" + " + safe(argsList[i]) + " + \"'";
+                    if (i < argsList.length - 1) appender += ", "
                 }
                 return appender.replace(", $");
             }
         };
 
         var result = new Parser($).parse();
-        console.log(result);
+        document.getElementById("DollarLike").innerHTML = result;
 
     </script>
-
-<h2>Select a version of JQuery ...</h2>
-<h2>Generate ...</h2>
 </body>
 </html>
 
