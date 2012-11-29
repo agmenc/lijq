@@ -6,11 +6,10 @@ case class Run(command: String) extends JsExp with JsMember {
   override val toJsCmd = command
 }
 
-class Dollar
+class Dollar extends DollarLike
 
-object Dollar extends Dollar with DollarLike {
+object Dollar extends Dollar {
   def apply(selector: String): JsExp = Run("jQuery('" + selector + "')")
-  def ajax(url: String, options: String) = Run("jQuery('" + url + "', '" + options + "')")
 }
 
 class JQuery(override val underlying: JsExp) extends JQueryLike
