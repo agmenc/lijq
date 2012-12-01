@@ -17,6 +17,10 @@
             var functions = "";
             var builtIns = "";
 
+            var preamble = /.*function .*\(/;
+            var postamble = /\).*/;
+            var comments = /\/\*.*\*\//;
+
             this.parse = function() {
                 for (var name in thing) {
                     var t = typeof thing[name];
@@ -43,7 +47,12 @@
 
             function registerFn(parent, name) {
                 var signature = parent[name].toString().split("\n")[0];
-                var argsList = signature.replace(/.*function .*\(/, "").replace(/\).*/, "").trim().split(", ");
+                var argsList = signature
+                        .replace(preamble, "")
+                        .replace(postamble, "")
+                        .replace(comments, "")
+                        .trim()
+                        .split(", ");
 
                 var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
 
@@ -53,6 +62,7 @@
                 functions += sig + "\n";
             }
 
+            // TODO - CAS - 01/12/2012 - Simplificate
             function dollarFnTemplate(name, argsList) {
                 return "def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = Run(\"jQuery." + name + "(" + toJsArgs(argsList) + ")\")";
             }
@@ -66,7 +76,7 @@
             }
 
             function toScalaArgs(argsList) {
-                // TODO - CAS - 28/11/2012 - Write a foreach
+                // TODO - CAS - 28/11/2012 - Use JQuery foreach
                 var appender = "";
                 for (var i = 0; i < argsList.length; i++) {
                     var arg = argsList[i];
@@ -86,6 +96,7 @@
             }
         };
 
+        // TODO - CAS - 01/12/2012 - Generate all of DollarLike and JQueryLike, and paste into one file
         var result = new Parser($).parse();
         document.getElementById("DollarLike").innerHTML = result;
 

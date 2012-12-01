@@ -1,8 +1,6 @@
 package org.agmenc.lijq
 
 trait DollarLike {
-  def ajax(url: String, options: String) = Run("jQuery('" + url + "', '" + options + "')")
-
   val fn = Run("jQuery.fn")
   val isReady = Run("jQuery.isReady")
   val readyWait = Run("jQuery.readyWait")
@@ -64,10 +62,10 @@ trait DollarLike {
   def now() = Run("jQuery.now()")
   def Callbacks(options: String) = Run("jQuery.Callbacks('" + options + "')")
   def Deferred(func: String) = Run("jQuery.Deferred('" + func + "')")
-  def when(subordinateN */: String) = Run("jQuery.when('" + subordinateN */ + "')")
+  def when(subordinate: String) = Run("jQuery.when('" + subordinate + "')")
   def hasData(elem: String) = Run("jQuery.hasData('" + elem + "')")
-  def data(elem: String, name: String, data: String, pvt /* Internal Use Only */: String) = Run("jQuery.data('" + elem + "', '" + name + "', '" + data + "', '" + pvt /* Internal Use Only */ + "')")
-  def removeData(elem: String, name: String, pvt /* Internal Use Only */: String) = Run("jQuery.removeData('" + elem + "', '" + name + "', '" + pvt /* Internal Use Only */ + "')")
+  def data(elem: String, name: String, data: String, pvt: String) = Run("jQuery.data('" + elem + "', '" + name + "', '" + data + "', '" + pvt + "')")
+  def removeData(elem: String, name: String, pvt: String) = Run("jQuery.removeData('" + elem + "', '" + name + "', '" + pvt + "')")
   def _data(elem: String, name: String, data: String) = Run("jQuery._data('" + elem + "', '" + name + "', '" + data + "')")
   def acceptData(elem: String) = Run("jQuery.acceptData('" + elem + "')")
   def queue(elem: String, typeX: String, data: String) = Run("jQuery.queue('" + elem + "', '" + typeX + "', '" + data + "')")
@@ -89,7 +87,7 @@ trait DollarLike {
   def buildFragment(args: String, context: String, scripts: String) = Run("jQuery.buildFragment('" + args + "', '" + context + "', '" + scripts + "')")
   def clone(elem: String, dataAndEvents: String, deepDataAndEvents: String) = Run("jQuery.clone('" + elem + "', '" + dataAndEvents + "', '" + deepDataAndEvents + "')")
   def clean(elems: String, context: String, fragment: String, scripts: String) = Run("jQuery.clean('" + elems + "', '" + context + "', '" + fragment + "', '" + scripts + "')")
-  def cleanData(elems: String, /* internal */ acceptData: String) = Run("jQuery.cleanData('" + elems + "', '" + /* internal */ acceptData + "')")
+  def cleanData(elems: String,  acceptData: String) = Run("jQuery.cleanData('" + elems + "', '" +  acceptData + "')")
   def uaMatch(ua: String) = Run("jQuery.uaMatch('" + ua + "')")
   def sub() = Run("jQuery.sub()")
   def style(elem: String, name: String, value: String, extra: String) = Run("jQuery.style('" + elem + "', '" + name + "', '" + value + "', '" + extra + "')")
