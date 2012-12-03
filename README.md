@@ -1,15 +1,10 @@
 lijq
 ====
 
-LIJQ (pronounced "like you") is a tiny JQuery wrapper for Lift to make JQuery JsCommands look like JQuery.
+LIJQ (pronounced "like you") lets you write `JsExp`-style [Lift](http://liftweb.net/) expressions that compile in Scala, yet look like JQuery.
 
-**Ugly (without LIJQ):**
-```scala
-
-```
-
-**Better:**
 ```scala
     $("#monkeys").addClass("hairy") &
     $.ajax("http://request.bananas.com", "{colour: 'yellow'}")
 ```
+
