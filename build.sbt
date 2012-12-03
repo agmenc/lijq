@@ -40,7 +40,7 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>https://github.com/agmenc/Pettswood</url>
+    <url>https://github.com/agmenc/lijq</url>
     <connection>scm:git:git@github.com:agmenc/lijq.git</connection>
   </scm>
   <developers>

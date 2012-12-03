@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>LIJQ Testbed</title>
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+</head>
+<body>
+<pre>
+package org.agmenc.lijq
+
+import net.liftweb.http.js.JsExp
+
+trait JQueryLike {
+  def underlying: JsExp
+
+<span id="JQueryLike"></span>
+}
+
+trait DollarLike {
+<span id="DollarLike"></span>
+}
+</pre>
+
+
+<script type="text/javascript">
+
+    var Parser = function(thing) {
+        var functions = "";
+        var builtIns = "";
+
+        var preamble = /.*function .*\(/;
+        var postamble = /\).*/;
+        var comments = /\/\*.*\*\//;
+
+        this.parse = function() {
+            for (var name in thing) {
+                var t = typeof thing[name];
+                switch (t) {
+                    case "function":
+                        registerFn(thing, name);
+                        break;
+                    case "object": case "string": case "number": case "boolean":
+                    registerBuiltIn(thing, name);
+                    break;
+                    default:
+                        console.debug(("[[[[[" + t + "]]]]] ===> " + name));
+                        break;
+                }
+            }
+
+            return builtIns + "\n" + functions;
+        };
+
+        function safe(name) {
+            return name
+                    .replace("type", "typeX")
+                    .replace("val", "valX")
+        }
+
+        function registerFn(parent, name) {
+            var signature = parent[name].toString().split("\n")[0];
+            var argsList = signature
+                    .replace(preamble, "")
+                    .replace(postamble, "")
+                    .replace(comments, "")
+                    .trim()
+                    .split(", ");
+
+            var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
+
+            while (argsList.length > argsLength) argsList.shift();
+
+            var sig = (thing == $) ? dollarFnTemplate(name, argsList) : jqueryFnTemplate(name, argsList);
+            functions += sig + "\n";
+        }
+
+        // TODO - CAS - 01/12/2012 - Simplificate
+        function dollarFnTemplate(name, argsList) {
+            return "  def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = Run(\"jQuery." + name + "(" + toJsArgs(argsList) + ")\")";
+        }
+
+        function jqueryFnTemplate(name, argsList) {
+            return "  def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(argsList) + ")\")";
+        }
+
+        function registerBuiltIn(parent, name) {
+            builtIns += "  val " + name + " = Run(\"jQuery." + name + "\")\n";
+        }
+
+        function toScalaArgs(argsList) {
+            // TODO - CAS - 28/11/2012 - Use JQuery foreach
+            var appender = "";
+            for (var i = 0; i < argsList.length; i++) {
+                var arg = argsList[i];
+                appender += safe(arg) + ": String";
+                if (i < argsList.length - 1) appender += ", "
+            }
+            return appender.replace(", $");
+        }
+
+        function toJsArgs(argsList)  {
+            var appender = "";
+            for (var i = 0; i < argsList.length; i++) {
+                appender += "'\" + " + safe(argsList[i]) + " + \"'";
+                if (i < argsList.length - 1) appender += ", "
+            }
+            return appender.replace(", $");
+        }
+    };
+
+    // TODO - CAS - 01/12/2012 - Publish to Maven, as per Pettswood. Use JQuery versions as lijq version
+
+    // TODO - CAS - 01/12/2012 - Generate all of DollarLike and JQueryLike, and paste into one file
+    var dollarLike = new Parser($).parse();
+    var jQueryLike = new Parser($('#JQueryLike')).parse();
+    document.getElementById("DollarLike").innerHTML = dollarLike;
+    document.getElementById("JQueryLike").innerHTML = jQueryLike;
+
+</script>
+</body>
+</html>
+

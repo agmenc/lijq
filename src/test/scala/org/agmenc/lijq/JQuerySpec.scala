@@ -2,9 +2,10 @@ package org.agmenc.lijq
 
 class JQuerySpec {
 
-  def poo() {
-    $("#monkeys").addClass("wees")
-    $("#monkeys").removeClass("wees")
+  // TODO - CAS - 03/12/2012 - Have one of these, to show usage, if nothing else
+  def todo() {
+    $("#monkeys").addClass("hairy")
+    $("#monkeys").removeClass("canRead")
 
     $.ajax("some URL", "Some Options")
     false
