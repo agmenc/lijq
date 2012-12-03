@@ -55,6 +55,7 @@ trait DollarLike {
             return name
                     .replace("type", "typeX")
                     .replace("val", "valX")
+                    .replace("0", "X0")
         }
 
         function registerFn(parent, name) {
@@ -84,7 +85,7 @@ trait DollarLike {
         }
 
         function registerBuiltIn(parent, name) {
-            builtIns += "  val " + name + " = Run(\"jQuery." + name + "\")\n";
+            builtIns += "  val " + safe(name) + " = Run(\"jQuery." + name + "\")\n";
         }
 
         function toScalaArgs(argsList) {
@@ -109,8 +110,10 @@ trait DollarLike {
     };
 
     // TODO - CAS - 01/12/2012 - Publish to Maven, as per Pettswood. Use JQuery versions as lijq version
+    // TODO - CAS - 03/12/2012 - Have a sensible anonymous function template or method (for callbacks, e.g. click())
+    // TODO - CAS - 03/12/2012 - Have a sensible JSON template or method (for options, e.g. offset())
 
-    // TODO - CAS - 01/12/2012 - Generate all of DollarLike and JQueryLike, and paste into one file
+    // TODO - CAS - 03/12/2012 - JQuerify
     var dollarLike = new Parser($).parse();
     var jQueryLike = new Parser($('#JQueryLike')).parse();
     document.getElementById("DollarLike").innerHTML = dollarLike;

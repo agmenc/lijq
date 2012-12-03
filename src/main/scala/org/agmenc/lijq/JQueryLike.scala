@@ -5,7 +5,7 @@ import net.liftweb.http.js.JsExp
 trait JQueryLike {
   def underlying: JsExp
 
-  val 0 = Run("jQuery.0")
+  val X0 = Run("jQuery.0")
   val length = Run("jQuery.length")
   val context = Run("jQuery.context")
   val selector = Run("jQuery.selector")
@@ -171,7 +171,7 @@ trait DollarLike {
   val uuid = Run("jQuery.uuid")
   val expando = Run("jQuery.expando")
   val noData = Run("jQuery.noData")
-  val valHooks = Run("jQuery.valHooks")
+  val valXHooks = Run("jQuery.valHooks")
   val attrFn = Run("jQuery.attrFn")
   val attrHooks = Run("jQuery.attrHooks")
   val propFix = Run("jQuery.propFix")
