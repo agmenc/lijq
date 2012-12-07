@@ -113,6 +113,8 @@ trait DollarLike {
 
     // TODO - CAS - 03/12/2012 - Have a sensible anonymous function template or method (for callbacks, e.g. click())
     // TODO - CAS - 03/12/2012 - Have a sensible JSON template or method (for options, e.g. offset())
+    // TODO - CAS - 07/12/2012 - If function string contains "arguments", add a varargs as the last (and possibly only) argument
+    // TODO - CAS - 07/12/2012 - Generate list of names for Array object, and remove those from the JQuery list (push, sort, splice)? Or are these JS built-ins helpful?
 
     $("#DollarLike").html(new Parser($).parse());
     $("#JQueryLike").html(new Parser($('#JQueryLike')).parse());

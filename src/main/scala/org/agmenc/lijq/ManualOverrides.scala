@@ -31,16 +31,17 @@ trait ManualOverrides { self: JQueryLike =>
   push    ?
   sort    ?
   splice  ?
-  extend  <=== up to here
+  extend  *
   unwrap
-  append
-  prepend
-  before
-  after
+  append  *
+  prepend *
+  before  *
+  after   *
   empty
   serialize
   serializeArray
   position
   offsetParent
+
   */
 }
