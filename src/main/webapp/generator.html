@@ -53,9 +53,9 @@ trait DollarLike {
 
         function safe(name) {
             return name
-                    .replace("type", "typeX")
-                    .replace("val", "valX")
-                    .replace("0", "X0")
+                    .replace(/type/, "typeX")
+                    .replace(/val\(/, "valX(")
+                    .replace(/0/, "X0")
         }
 
         function registerFn(parent, name) {
@@ -70,6 +70,8 @@ trait DollarLike {
             var argsLength = parent[name].prototype ? parent[name].prototype.constructor.length : 0;
 
             while (argsList.length > argsLength) argsList.shift();
+
+            if (!argsList || argsList.length == 0) console.log(name + " " + thing[name]);
 
             var sig = (thing == $) ? dollarFnTemplate(name, argsList) : jqueryFnTemplate(name, argsList);
             functions += sig + "\n";

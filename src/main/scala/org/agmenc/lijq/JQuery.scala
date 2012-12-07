@@ -12,4 +12,4 @@ object Dollar extends Dollar {
   def apply(selector: String): JsExp = Run("jQuery('" + selector + "')")
 }
 
-class JQuery(override val underlying: JsExp) extends JQueryLike
+class JQuery(override val underlying: JsExp) extends JQueryLike with ManualOverrides
