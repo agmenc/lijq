@@ -17,13 +17,10 @@ trait ManualOverrides { self: JQueryLike =>
 
   /*
   Legend:
-      * = (var) args => add varargs args as last param, in generator script
       ? = native code => check API docs
-      ns = NodeSequence candidate
       p = possible intruders from generic JS objects
 
   (1) DollarLike with no visible args
-  extend  *
   isArray p
   noop
   now
@@ -34,17 +31,11 @@ trait ManualOverrides { self: JQueryLike =>
   toArray
   first
   last
-  slice   *
   end
-  push    ?
-  sort    ?
-  splice  ?
-  extend  *
+  push    ? p
+  sort    ? p
+  splice  ? p
   unwrap
-  append  *   ns
-  prepend *   ns
-  before  *   ns
-  after   *   ns
   empty
   serialize
   serializeArray
