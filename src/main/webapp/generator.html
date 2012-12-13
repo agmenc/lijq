@@ -24,6 +24,8 @@ trait DollarLike {
 
 <script type="text/javascript">
 
+    String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+
     var Parser = function(thing) {
         var functions = "";
         var builtIns = "";
@@ -54,7 +56,7 @@ trait DollarLike {
         function safe(name) {
             return name
                     .replace(/type/, "typeX")
-                    .replace(/val\(/, "valX(")
+                    .replace(/^val$/, "valX")
                     .replace(/0/, "X0")
         }
 
@@ -71,10 +73,15 @@ trait DollarLike {
 
             while (argsList.length > argsLength) argsList.shift();
 
-            if (!argsList || argsList.length == 0) console.log(name + " " + thing[name]);
+            if (usesArgumentsArray(thing, name)) argsList.push("arguments");
 
             var sig = (thing == $) ? dollarFnTemplate(name, argsList) : jqueryFnTemplate(name, argsList);
             functions += sig + "\n";
+        }
+
+        function usesArgumentsArray(thing, name) {
+            var functionBody = ("" + thing[name]);
+            return functionBody.contains("arguments") && !functionBody.contains("arguments.length")
         }
 
         // TODO - CAS - 01/12/2012 - Simplificate
@@ -96,9 +103,10 @@ trait DollarLike {
             for (var i = 0; i < argsList.length; i++) {
                 var arg = argsList[i];
                 appender += safe(arg) + ": String";
+                if (arg === "arguments") appender += "*";
                 if (i < argsList.length - 1) appender += ", "
             }
-            return appender.replace(", $");
+            return appender.replace(/, $/, "");
         }
 
         function toJsArgs(argsList)  {
@@ -113,7 +121,6 @@ trait DollarLike {
 
     // TODO - CAS - 03/12/2012 - Have a sensible anonymous function template or method (for callbacks, e.g. click())
     // TODO - CAS - 03/12/2012 - Have a sensible JSON template or method (for options, e.g. offset())
-    // TODO - CAS - 07/12/2012 - If function string contains "arguments", add a varargs as the last (and possibly only) argument
     // TODO - CAS - 07/12/2012 - Generate list of names for Array object, and remove those from the JQuery list (push, sort, splice)? Or are these JS built-ins helpful?
 
     $("#DollarLike").html(new Parser($).parse());

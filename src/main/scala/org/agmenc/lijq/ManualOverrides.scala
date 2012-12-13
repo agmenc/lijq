@@ -4,24 +4,24 @@ import xml.NodeSeq
 import net.liftweb.http.js.jquery.JqJE.JqAppend
 
 trait ManualOverrides { self: JQueryLike =>
-  override def append() { println("monkeys") }
-  def append(text: String) = underlying ~> Run("append('" + text + "')")
   def append(ns: NodeSeq) = underlying ~> JqAppend(ns)
 
 
   /*
   Legend:
-      * = (var) args
+      * = (var) args => add varargs args as last param, in generator script
       ? = native code => check API docs
+      ns = NodeSequence candidate
+      p = possible intruders from generic JS objects
 
-  (1) DollarLike
+  (1) DollarLike with no visible args
   extend  *
-  isArray
+  isArray p
   noop
   now
   sub
 
-  (2) JQueryLike
+  (2) JQueryLike with no visible args
   size
   toArray
   first
@@ -33,10 +33,10 @@ trait ManualOverrides { self: JQueryLike =>
   splice  ?
   extend  *
   unwrap
-  append  *
-  prepend *
-  before  *
-  after   *
+  append  *   ns
+  prepend *   ns
+  before  *   ns
+  after   *   ns
   empty
   serialize
   serializeArray
