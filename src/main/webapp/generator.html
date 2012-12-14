@@ -24,6 +24,8 @@ trait DollarLike {
 
 <script type="text/javascript">
 
+    var global;
+
     String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
     var Parser = function(thing) {
@@ -97,26 +99,26 @@ trait DollarLike {
             builtIns += "  val " + safe(name) + " = Run(\"jQuery." + name + "\")\n";
         }
 
+        // TODO - CAS - 14/12/2012 - A function of (appender, argsList) that returns a function of (key, arg)
+
         function toScalaArgs(argsList) {
-            // TODO - CAS - 28/11/2012 - Use JQuery foreach
             var appender = "";
-            for (var i = 0; i < argsList.length; i++) {
-                var arg = argsList[i];
-                appender += safe(arg) + ": String";
-                if (arg === "arguments") appender += "*";
-                if (i < argsList.length - 1) appender += ", "
-            }
+            $.each(argsList, function(key, arg) {
+                appender += safe(arg) + ": String" + varargs(arg) + delimiter(key, argsList);
+            });
             return appender.replace(/, $/, "");
         }
 
         function toJsArgs(argsList)  {
             var appender = "";
-            for (var i = 0; i < argsList.length; i++) {
-                appender += "'\" + " + safe(argsList[i]) + " + \"'";
-                if (i < argsList.length - 1) appender += ", "
-            }
-            return appender.replace(", $");
+            $.each(argsList, function(key, arg) {
+                appender += "'\" + " + safe(arg) + " + \"'" + delimiter(key, argsList);
+            });
+            return appender.replace(/, $/, "");
         }
+
+        function varargs(arg) { return (arg === "arguments") ? "*" : ""; }
+        function delimiter(key, argsList) { return (key < argsList.length - 1) ? ", " : ""; }
     };
 
     // TODO - CAS - 03/12/2012 - Have a sensible anonymous function template or method (for callbacks, e.g. click())
