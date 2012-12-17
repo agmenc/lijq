@@ -10,5 +10,5 @@ LIJQ (pronounced "like you") lets you write `JsExp`-style [Lift](http://liftweb.
 
 Add to your sbt project:
 ```scala
-  libraryDependencies +=  "com.github.agmenc" %% "lijq" % "1.8.3" % "compile"
+  libraryDependencies +=  "com.github.agmenc" %% "lijq" % "1.8.3.1" % "compile"
 ```

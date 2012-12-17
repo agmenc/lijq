@@ -11,6 +11,8 @@ trait ManualOverrides { self: JQueryLike =>
   def before(ns: NodeSeq) = underlying ~> make("before", ns)
   def after(ns: NodeSeq) = underlying ~> make("after", ns)
 
+  def toggleClass(value: String) = underlying ~> Run("toggleClass('" + value + "')")
+
   case class make(functionName: String, content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd = functionName + "(" + fixHtmlFunc("inline", content){str => str }+ ")"
   }

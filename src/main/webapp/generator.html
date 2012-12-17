@@ -29,6 +29,7 @@ trait DollarLike {
     String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
     var Parser = function(thing) {
+        var self = this;
         var functions = "";
         var builtIns = "";
 
@@ -88,37 +89,34 @@ trait DollarLike {
 
         // TODO - CAS - 01/12/2012 - Simplificate
         function dollarFnTemplate(name, argsList) {
-            return "  def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = Run(\"jQuery." + name + "(" + toJsArgs(argsList) + ")\")";
+            return "  def " + safe(name)+ "(" + toArgs(argsList, scala) + ") = Run(\"jQuery." + name + "(" + toArgs(argsList, js) + ")\")";
         }
 
         function jqueryFnTemplate(name, argsList) {
-            return "  def " + safe(name)+ "(" + toScalaArgs(argsList) + ") = underlying ~> Run(\"" + name + "(" + toJsArgs(argsList) + ")\")";
+            return "  def " + safe(name)+ "(" + toArgs(argsList, scala) + ") = underlying ~> Run(\"" + name + "(" + toArgs(argsList, js) + ")\")";
         }
 
         function registerBuiltIn(parent, name) {
             builtIns += "  val " + safe(name) + " = Run(\"jQuery." + name + "\")\n";
         }
 
-        // TODO - CAS - 14/12/2012 - A function of (appender, argsList) that returns a function of (key, arg)
-
-        function toScalaArgs(argsList) {
-            var appender = "";
-            $.each(argsList, function(key, arg) {
-                appender += safe(arg) + ": String" + varargs(arg) + delimiter(key, argsList);
-            });
-            return appender.replace(/, $/, "");
+        function scala(val) {
+            return safe(val) + ": String" + varargs(val) + ", ";
         }
 
-        function toJsArgs(argsList)  {
+        function js(val) {
+            return "'\" + " + safe(val) + " + \"', ";
+        }
+
+        function toArgs(argsList, fn) {
             var appender = "";
-            $.each(argsList, function(key, arg) {
-                appender += "'\" + " + safe(arg) + " + \"'" + delimiter(key, argsList);
+            $.each(argsList, function(key, val) {
+                appender += "" + fn(val)
             });
             return appender.replace(/, $/, "");
         }
 
         function varargs(arg) { return (arg === "arguments") ? "*" : ""; }
-        function delimiter(key, argsList) { return (key < argsList.length - 1) ? ", " : ""; }
     };
 
     // TODO - CAS - 03/12/2012 - Have a sensible anonymous function template or method (for callbacks, e.g. click())

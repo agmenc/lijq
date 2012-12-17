@@ -2,7 +2,7 @@ name := "lijq"
 
 organization := "com.github.agmenc"
 
-version := "1.8.3"
+version := "1.8.3.1"
 
 crossScalaVersions := Seq("2.9.1", "2.9.2", "2.10.0-RC3")
 
