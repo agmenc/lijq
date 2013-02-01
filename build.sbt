@@ -2,11 +2,13 @@ name := "lijq"
 
 organization := "com.github.agmenc"
 
-version := "1.8.3.1"
+version := "1.8.3.2"
 
-crossScalaVersions := Seq("2.9.1", "2.9.2", "2.10.0-RC3")
+scalaVersion := "2.9.2"
 
-libraryDependencies +=  "net.liftweb" %% "lift-webkit" % "2.5-M3" % "compile"
+crossScalaVersions := Seq("2.9.1", "2.9.2", "2.10.0-RC3", "2.10.0")
+
+libraryDependencies +=  "net.liftweb" %% "lift-webkit" % "2.5-M4" % "compile"
 
 libraryDependencies ++= Seq(
   "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
