@@ -8,14 +8,11 @@ import jquery.JqJE.JqPrepend
 trait ManualOverrides { self: JQueryLike =>
   def append(ns: NodeSeq) = underlying ~> JqAppend(ns)
   def prepend(ns: NodeSeq) = underlying ~> JqPrepend(ns)
-  def before(ns: NodeSeq) = underlying ~> make("before", ns)
-  def after(ns: NodeSeq) = underlying ~> make("after", ns)
+  def before(ns: NodeSeq) = underlying ~> call("before", ns)
+  def after(ns: NodeSeq) = underlying ~> call("after", ns)
+  def html(ns: NodeSeq) = underlying ~> call("html", ns)
 
   def toggleClass(value: String) = underlying ~> Run("toggleClass('" + value + "')")
-
-  case class make(functionName: String, content: NodeSeq) extends JsExp with JsMember {
-    override val toJsCmd = functionName + "(" + fixHtmlFunc("inline", content){str => str }+ ")"
-  }
 
   /*
   Legend:

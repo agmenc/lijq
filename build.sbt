@@ -1,36 +1,21 @@
+import SonatypeKeys._
+
 name := "lijq"
 
 organization := "com.github.agmenc"
 
-version := "1.8.3.2"
+version := "2.0.0"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.11.4"
 
-crossScalaVersions := Seq("2.9.1", "2.9.2", "2.10.0-RC3", "2.10.0")
+crossScalaVersions := Seq("2.10.3", "2.11.4")
 
-libraryDependencies +=  "net.liftweb" %% "lift-webkit" % "2.5-M4" % "compile"
-
-libraryDependencies ++= Seq(
-  "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-  "javax.servlet" % "servlet-api" % "2.5" % "test",
-  "org.specs2" %% "specs2" % "1.11" % "test" withSources(),
-  "org.specs2" %% "specs2-scalaz-core" % "6.0.1" % "test" withSources(),
-  "junit" % "junit" % "4.8.1" % "test" withSources(),
-  "org.mockito" % "mockito-core" % "1.9.0-rc1" % "test" withSources()
-)
+libraryDependencies +=  "net.liftweb" %% "lift-webkit" % "2.6" % "compile"
 
 // --------- Publishing -----------------------
-publishTo <<= version { v: String =>
-  val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
+sonatypeSettings
 
-publishMavenStyle := true
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { x => false }
+credentials += Credentials(Path.userHome / ".sbt" / ".credentials")
 
 pomExtra := (
   <url>https://github.com/agmenc/lijq</url>
